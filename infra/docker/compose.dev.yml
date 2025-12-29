@@ -1,0 +1,72 @@
+services:
+  strapi:
+    container_name: portfolio-cms-dev
+    build:
+      context: ../../apps/cms
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+    image: portfolio-cms:dev
+    restart: unless-stopped
+
+    env_file:
+      - ./cms.dev.env
+
+    environment:
+      NODE_ENV: development
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: strapiDB
+      DATABASE_PORT: 5432
+      DATABASE_NAME: portfolio_cms
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: strapi
+      DATABASE_SSL: "false"
+
+      HOST: 0.0.0.0
+      PORT: 1337
+
+    ports:
+      - "1337:1337"
+
+    volumes:
+      # Monta el proyecto Strapi en el path que usa tu Dockerfile
+      - ../../apps/cms:/opt/app
+
+      # IMPORTANTE: evita que el node_modules del host pise el del contenedor
+      - strapi_node_modules:/opt/app/node_modules
+
+      # Opcional: persiste uploads en dev
+      - strapi_uploads:/opt/app/public/uploads
+
+      # Opcional: caches de Strapi
+      - strapi_cache:/opt/app/.cache
+      - strapi_tmp:/opt/app/.tmp
+
+    depends_on:
+      strapiDB:
+        condition: service_healthy
+
+  strapiDB:
+    container_name: portfolio-postgres-dev
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: portfolio_cms
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi
+    ports:
+      - "5432:5432"
+    volumes:
+      - strapi-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U strapi -d portfolio_cms"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  strapi-data:
+  strapi_node_modules:
+  strapi_uploads:
+  strapi_cache:
+  strapi_tmp:
