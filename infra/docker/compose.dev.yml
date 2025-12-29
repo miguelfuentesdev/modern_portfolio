@@ -29,16 +29,17 @@ services:
       - "1337:1337"
 
     volumes:
-      # Monta el proyecto Strapi en el path que usa tu Dockerfile
-      - ../../apps/cms:/opt/app
+      - ../../apps/cms/config:/opt/app/config
+      - ../../apps/cms/src:/opt/app/src
+      - ../../apps/cms/public:/opt/app/public
+      - ../../apps/cms/package.json:/opt/app/package.json
+      - ../../apps/cms/pnpm-lock.yaml:/opt/app/pnpm-lock.yaml
+      - ../../apps/cms/tsconfig.json:/opt/app/tsconfig.json
 
-      # IMPORTANTE: evita que el node_modules del host pise el del contenedor
-      - strapi_node_modules:/opt/app/node_modules
-
-      # Opcional: persiste uploads en dev
+      # Persistir uploads (recomendado)
       - strapi_uploads:/opt/app/public/uploads
 
-      # Opcional: caches de Strapi
+      # (Opcional) caches
       - strapi_cache:/opt/app/.cache
       - strapi_tmp:/opt/app/.tmp
 
