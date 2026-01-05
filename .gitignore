@@ -2,3 +2,4 @@ apps/cms/node_modules
 
 # Environment
 infra/docker/cms.dev.env
+infra/docker/cms.prod.env
