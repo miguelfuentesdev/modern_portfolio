@@ -10,20 +10,20 @@ services:
     restart: unless-stopped
 
     env_file:
-      - ./cms.dev.env
+      - ./.env
 
     environment:
       NODE_ENV: development
-      DATABASE_CLIENT: postgres
+      DATABASE_CLIENT: ${DATABASE_CLIENT}
       DATABASE_HOST: strapiDB
-      DATABASE_PORT: 5432
-      DATABASE_NAME: portfolio_cms
-      DATABASE_USERNAME: strapi
-      DATABASE_PASSWORD: strapi
-      DATABASE_SSL: "false"
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_SSL: ${DATABASE_SSL}
 
-      HOST: 0.0.0.0
-      PORT: 1337
+      HOST: ${HOST}
+      PORT: ${PORT}
 
     ports:
       - "1337:1337"
@@ -51,16 +51,18 @@ services:
     container_name: portfolio-postgres-dev
     image: postgres:16-alpine
     restart: unless-stopped
+    env_file:
+      - ./.env
     environment:
-      POSTGRES_DB: portfolio_cms
-      POSTGRES_USER: strapi
-      POSTGRES_PASSWORD: strapi
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - strapi-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U strapi -d portfolio_cms"]
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME} -d ${DATABASE_NAME}"]
       interval: 5s
       timeout: 3s
       retries: 20
