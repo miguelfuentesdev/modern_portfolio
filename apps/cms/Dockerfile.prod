@@ -22,6 +22,7 @@ WORKDIR /opt/app
 COPY . .
 
 # Build de Strapi (admin panel + build artifacts)
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 RUN pnpm build
 
 # Deja solo deps de producción
