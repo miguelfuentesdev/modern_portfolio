@@ -1,7 +1,5 @@
 services:
   caddy:
-    cpus: "0.10"
-    mem_limit: "120m"
     image: caddy:2
     container_name: caddy
     restart: unless-stopped
@@ -16,13 +14,9 @@ services:
       - strapi
 
   strapi:
-    cpus: "0.80"
-    mem_limit: "700m"
     container_name: strapi
     restart: unless-stopped
-    build:
-      context: ../../apps/cms
-      dockerfile: Dockerfile.prod
+    image: ghcr.io/miguelfuentesdev/portfolio-cms:latest
     env_file:
       - ./.env
     environment:
@@ -45,8 +39,6 @@ services:
         condition: service_healthy
 
   postgres:
-    cpus: "0.20"
-    mem_limit: "220m"
     image: postgres:16-alpine
     container_name: postgres
     restart: unless-stopped
