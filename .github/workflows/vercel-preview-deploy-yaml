@@ -21,21 +21,20 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9
-        working-directory: apps/web
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'pnpm'
-        working-directory: apps/web
+        cache-dependency-path: 'apps/web/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        working-directory: apps/web
 
       - name: Install Vercel CLI
         run: pnpm install -g vercel@latest
+        working-directory: .
 
       - name: Pull Vercel Environment Variables
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
