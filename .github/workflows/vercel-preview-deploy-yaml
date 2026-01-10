@@ -34,13 +34,10 @@ jobs:
         working-directory: .
 
       - name: Pull Vercel Environment Variables
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: apps/web
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }} --cwd=apps/web
 
       - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: apps/web
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }} --cwd=apps/web
 
       - name: Deploy Project Artifacts
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: apps/web
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --cwd=apps/web
